@@ -11,7 +11,8 @@ venv/
 dataset/
 features/
 experiments/
-logs/
+logs/*
+!logs/.gitkeep
 outputs/
 *.zip
 *.npz

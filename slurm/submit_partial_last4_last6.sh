@@ -6,6 +6,8 @@ PROJECT_ROOT=${PROJECT_ROOT:-/data/rhrjs0307/repos/capston/ct_brain_dino}
 OUTPUT_BASE=${OUTPUT_BASE:-$PROJECT_ROOT/outputs}
 PARTIAL_FOLDS=${PARTIAL_FOLDS:-0-4}
 
+mkdir -p "$SCRIPT_DIR/../logs"
+
 submit_partial() {
   local n_blocks="$1"
   local lr_backbone="$2"

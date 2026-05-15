@@ -172,6 +172,7 @@ python -m cq500_dinov3_mil.evaluate \
 Use the helper as an array wrapper:
 
 ```bash
+mkdir -p logs
 CONDA_ENV=dinov3 STRATEGY=lora POOLER=abmil OUTPUT_ROOT=outputs/lora_abmil \
   sbatch --array=0-4 slurm/cq500_dinov3_mil_fold.slurm
 ```
