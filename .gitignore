@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Data and generated experiment artifacts
+256x256/
+dataset/
+features/
+experiments/
+logs/
+outputs/
+*.zip
+*.npz
+*.pt
+*.pth
+*.ckpt
+
+# Local machine clutter
+.DS_Store
+Thumbs.db

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cq500-dinov3-mil"
+version = "0.1.0"
+description = "DINOv3 + MIL baselines for CQ-500 hemorrhage experiments."
+requires-python = ">=3.10"
+dependencies = [
+  "torch",
+  "torchvision",
+  "transformers",
+  "peft",
+  "pandas",
+  "numpy",
+  "pillow",
+  "scikit-learn",
+  "tqdm",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
