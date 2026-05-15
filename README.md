@@ -9,7 +9,7 @@ This repo is intentionally separated from the local data/results folder. Put onl
 - `frozen`: DINOv3 frozen, train only MIL head.
 - `linear_probe`: DINOv3 frozen, mean-pool slices, train only a linear classifier.
 - `lora`: DINOv3 frozen base with LoRA adapters plus MIL head.
-- `partial`: unfreeze the last N transformer blocks plus MIL head.
+- `partial`: unfreeze the last 4 or 6 transformer blocks plus MIL head.
 
 MIL poolers:
 
@@ -108,7 +108,7 @@ python -m cq500_dinov3_mil.train \
   --use-pos-weight
 ```
 
-Partial fine-tuning + ABMIL:
+Partial fine-tuning last4 + ABMIL:
 
 ```bash
 python -m cq500_dinov3_mil.train \
@@ -117,15 +117,38 @@ python -m cq500_dinov3_mil.train \
   --split-csv "$SPLIT_CSV" \
   --project-root "$PROJECT_ROOT" \
   --fold 0 \
-  --output-dir outputs/partial_last1_abmil/fold0 \
+  --output-dir outputs/partial_last4_abmil/fold0 \
   --model-name facebook/dinov3-vitb16-pretrain-lvd1689m \
-  --unfreeze-last-n-blocks 1 \
+  --unfreeze-last-n-blocks 4 \
   --train-norm \
   --gradient-checkpointing \
   --image-size 256 \
   --slice-chunk-size 1 \
   --epochs 20 \
-  --lr-backbone 1e-5 \
+  --lr-backbone 5e-6 \
+  --lr-head 3e-4 \
+  --amp --amp-dtype bf16 \
+  --use-pos-weight
+```
+
+Partial fine-tuning last6 + ABMIL:
+
+```bash
+python -m cq500_dinov3_mil.train \
+  --strategy partial \
+  --pooler abmil \
+  --split-csv "$SPLIT_CSV" \
+  --project-root "$PROJECT_ROOT" \
+  --fold 0 \
+  --output-dir outputs/partial_last6_abmil/fold0 \
+  --model-name facebook/dinov3-vitb16-pretrain-lvd1689m \
+  --unfreeze-last-n-blocks 6 \
+  --train-norm \
+  --gradient-checkpointing \
+  --image-size 256 \
+  --slice-chunk-size 1 \
+  --epochs 20 \
+  --lr-backbone 2e-6 \
   --lr-head 3e-4 \
   --amp --amp-dtype bf16 \
   --use-pos-weight
@@ -149,6 +172,13 @@ Use the helper as an array wrapper:
 ```bash
 STRATEGY=lora POOLER=abmil OUTPUT_ROOT=outputs/lora_abmil \
   sbatch --array=0-4 slurm/cq500_dinov3_mil_fold.slurm
+```
+
+Submit both partial fine-tuning presets:
+
+```bash
+PROJECT_ROOT=/data/rhrjs0307/repos/capston/ct_brain_dino \
+  bash slurm/submit_partial_last4_last6.sh
 ```
 
 ## Summarize Folds

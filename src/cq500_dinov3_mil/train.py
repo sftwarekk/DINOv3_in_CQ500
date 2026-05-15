@@ -521,7 +521,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--lora-dropout", type=float, default=0.1)
     parser.add_argument("--lora-targets", default="auto")
 
-    parser.add_argument("--unfreeze-last-n-blocks", type=int, default=1)
+    parser.add_argument("--unfreeze-last-n-blocks", type=int, default=4)
     parser.add_argument("--train-norm", action="store_true")
     parser.add_argument("--train-patch-embed", action="store_true")
     parser.add_argument("--gradient-checkpointing", action="store_true")
