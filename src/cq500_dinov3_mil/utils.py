@@ -37,11 +37,23 @@ def read_json(path: str | Path) -> Any:
         return json.load(f)
 
 
+def _json_default(obj: Any) -> Any:
+    if isinstance(obj, Path):
+        return str(obj)
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, np.generic):
+        return obj.item()
+    if torch.is_tensor(obj):
+        return obj.detach().cpu().tolist()
+    raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
+
+
 def write_json(obj: Any, path: str | Path) -> None:
     path = Path(path)
     ensure_dir(path.parent)
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=2)
+        json.dump(obj, f, ensure_ascii=False, indent=2, default=_json_default)
 
 
 def count_parameters(model: torch.nn.Module) -> dict[str, int | float]:
