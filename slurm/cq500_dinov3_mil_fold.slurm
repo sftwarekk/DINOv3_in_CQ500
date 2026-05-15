@@ -9,10 +9,30 @@
 
 set -euo pipefail
 
+CONDA_ENV=${CONDA_ENV:-dinov3}
+CONDA_SH=${CONDA_SH:-}
+
+if [[ -n "$CONDA_SH" && -f "$CONDA_SH" ]]; then
+  source "$CONDA_SH"
+elif command -v conda >/dev/null 2>&1; then
+  source "$(conda info --base)/etc/profile.d/conda.sh"
+elif [[ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]]; then
+  source "$HOME/miniconda3/etc/profile.d/conda.sh"
+elif [[ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]]; then
+  source "$HOME/anaconda3/etc/profile.d/conda.sh"
+else
+  echo "[ERROR] conda init script not found. Set CONDA_SH=/path/to/conda.sh or load conda before sbatch." >&2
+  exit 1
+fi
+
+conda activate "$CONDA_ENV"
+echo "[INFO] activated conda env: $CONDA_ENV"
+
 PROJECT_ROOT=${PROJECT_ROOT:-/data/rhrjs0307/repos/capston/ct_brain_dino}
 SPLIT_CSV=${SPLIT_CSV:-$PROJECT_ROOT/cq500_5fold_split_full.csv}
 OUTPUT_ROOT=${OUTPUT_ROOT:-$PROJECT_ROOT/outputs/cq500_dinov3_mil}
 PYTHON=${PYTHON:-python}
+echo "[INFO] python: $("$PYTHON" -c 'import sys; print(sys.executable)')"
 
 FOLD=${SLURM_ARRAY_TASK_ID:-0}
 STRATEGY=${STRATEGY:-frozen}

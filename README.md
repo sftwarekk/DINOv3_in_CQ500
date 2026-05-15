@@ -31,6 +31,8 @@ The loader also accepts common aliases such as `case_id`, `target`, `path`, `cas
 ## Install
 
 ```bash
+conda create -n dinov3 python=3.10 -y
+conda activate dinov3
 pip install -e .
 ```
 
@@ -170,7 +172,7 @@ python -m cq500_dinov3_mil.evaluate \
 Use the helper as an array wrapper:
 
 ```bash
-STRATEGY=lora POOLER=abmil OUTPUT_ROOT=outputs/lora_abmil \
+CONDA_ENV=dinov3 STRATEGY=lora POOLER=abmil OUTPUT_ROOT=outputs/lora_abmil \
   sbatch --array=0-4 slurm/cq500_dinov3_mil_fold.slurm
 ```
 
