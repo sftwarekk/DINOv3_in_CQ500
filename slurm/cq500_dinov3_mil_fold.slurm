@@ -6,6 +6,8 @@
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/cq500_dinov3_mil_%A_%a.out
 #SBATCH --error=logs/cq500_dinov3_mil_%A_%a.err
+#SBATCH --partition=batch_ugrad_advisor_x
+#SBATCH --nodelist=moana-u4
 
 set -euo pipefail
 
