@@ -11,6 +11,8 @@
 
 set -euo pipefail
 
+export PYTORCH_CUDA_ALLOC_CONF=${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}
+
 CONDA_ENV=${CONDA_ENV:-dinov3}
 CONDA_SH=${CONDA_SH:-}
 
@@ -43,7 +45,7 @@ MODEL_NAME=${MODEL_NAME:-facebook/dinov3-vitb16-pretrain-lvd1689m}
 
 IMAGE_SIZE=${IMAGE_SIZE:-256}
 MAX_SLICES=${MAX_SLICES:-0}
-SLICE_CHUNK_SIZE=${SLICE_CHUNK_SIZE:-4}
+SLICE_CHUNK_SIZE=${SLICE_CHUNK_SIZE:-}
 BATCH_SIZE=${BATCH_SIZE:-1}
 EPOCHS=${EPOCHS:-20}
 NUM_WORKERS=${NUM_WORKERS:-4}
@@ -61,10 +63,12 @@ if [[ "$STRATEGY" == "frozen" || "$STRATEGY" == "linear_probe" ]]; then
 fi
 if [[ "$STRATEGY" == "lora" ]]; then
   LR_BACKBONE=${LR_BACKBONE:-1e-4}
-  EXTRA_ARGS+=(--lora-r "${LORA_R:-8}" --lora-alpha "${LORA_ALPHA:-16}" --lora-targets "${LORA_TARGETS:-auto}")
+  SLICE_CHUNK_SIZE=${SLICE_CHUNK_SIZE:-1}
+  EXTRA_ARGS+=(--lora-r "${LORA_R:-8}" --lora-alpha "${LORA_ALPHA:-16}" --lora-targets "${LORA_TARGETS:-auto}" --gradient-checkpointing)
 fi
 if [[ "$STRATEGY" == "partial" ]]; then
   UNFREEZE_LAST_N_BLOCKS=${UNFREEZE_LAST_N_BLOCKS:-4}
+  SLICE_CHUNK_SIZE=${SLICE_CHUNK_SIZE:-1}
   if [[ -z "${LR_BACKBONE+x}" ]]; then
     if [[ "$UNFREEZE_LAST_N_BLOCKS" -ge 6 ]]; then
       LR_BACKBONE=2e-6
@@ -75,6 +79,7 @@ if [[ "$STRATEGY" == "partial" ]]; then
   EXTRA_ARGS+=(--unfreeze-last-n-blocks "$UNFREEZE_LAST_N_BLOCKS" --train-norm --gradient-checkpointing)
 fi
 LR_BACKBONE=${LR_BACKBONE:-1e-5}
+SLICE_CHUNK_SIZE=${SLICE_CHUNK_SIZE:-4}
 
 "$PYTHON" -m cq500_dinov3_mil.train \
   --strategy "$STRATEGY" \

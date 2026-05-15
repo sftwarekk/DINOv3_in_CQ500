@@ -211,6 +211,8 @@ class DINOv3MIL(nn.Module):
             trust_remote_code=trust_remote_code,
             local_files_only=local_files_only,
         )
+        if gradient_checkpointing and hasattr(backbone.config, "use_cache"):
+            backbone.config.use_cache = False
         if gradient_checkpointing and hasattr(backbone, "gradient_checkpointing_enable"):
             backbone.gradient_checkpointing_enable()
 
@@ -230,6 +232,9 @@ class DINOv3MIL(nn.Module):
             self.lora_targets = targets
         else:
             self.lora_targets = None
+
+        if gradient_checkpointing and hasattr(backbone, "enable_input_require_grads"):
+            backbone.enable_input_require_grads()
 
         self.backbone = backbone
         self.num_register_tokens = int(getattr(backbone.config, "num_register_tokens", 0))

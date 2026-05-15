@@ -104,7 +104,8 @@ python -m cq500_dinov3_mil.train \
   --lora-alpha 16 \
   --lora-targets auto \
   --image-size 256 \
-  --slice-chunk-size 2 \
+  --slice-chunk-size 1 \
+  --gradient-checkpointing \
   --epochs 20 \
   --amp --amp-dtype bf16 \
   --use-pos-weight
@@ -176,6 +177,8 @@ mkdir -p logs
 CONDA_ENV=dinov3 STRATEGY=lora POOLER=abmil OUTPUT_ROOT=outputs/lora_abmil \
   sbatch --array=0-4 slurm/cq500_dinov3_mil_fold.slurm
 ```
+
+For all-slice LoRA on 12GB GPUs, keep `SLICE_CHUNK_SIZE=1`. If it still OOMs, reduce `IMAGE_SIZE=224` or run LoRA with a sampled-slice ablation.
 
 Submit both partial fine-tuning presets:
 
