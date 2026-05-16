@@ -149,6 +149,7 @@ def detect_block_ids(backbone: nn.Module) -> tuple[str, list[int]]:
     patterns = [
         ("blocks", re.compile(r"(?:^|\.)blocks\.(\d+)\.")),
         ("encoder.layer", re.compile(r"(?:^|\.)encoder\.layer\.(\d+)\.")),
+        ("model.layer", re.compile(r"(?:^|\.)model\.layer\.(\d+)\.")),
         ("layers", re.compile(r"(?:^|\.)layers\.(\d+)\.")),
     ]
     names = [name for name, _ in backbone.named_parameters()]
@@ -168,6 +169,8 @@ def name_in_block(name: str, pattern_name: str, block_id: int) -> bool:
         return re.search(rf"(?:^|\.)blocks\.{block_id}\.", name) is not None
     if pattern_name == "encoder.layer":
         return re.search(rf"(?:^|\.)encoder\.layer\.{block_id}\.", name) is not None
+    if pattern_name == "model.layer":
+        return re.search(rf"(?:^|\.)model\.layer\.{block_id}\.", name) is not None
     if pattern_name == "layers":
         return re.search(rf"(?:^|\.)layers\.{block_id}\.", name) is not None
     return False
