@@ -19,7 +19,7 @@ IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff"}
 
 CASE_ID_ALIASES = ["name", "case_id", "case", "patient_id", "study_id", "series_id"]
 LABEL_ALIASES = ["label", "target", "y", "hemorrhage", "ich", "any_hemorrhage"]
-PATH_ALIASES = ["series_dir", "case_dir", "dir_path", "image_dir", "path", "local_path"]
+PATH_ALIASES = ["series_dir", "seriesdir", "case_dir", "dir_path", "image_dir", "path", "local_path"]
 FOLD_ALIASES = ["fold", "Fold", "cv_fold", "kfold"]
 SPLIT_ALIASES = ["split", "Split", "set", "phase", "partition"]
 
